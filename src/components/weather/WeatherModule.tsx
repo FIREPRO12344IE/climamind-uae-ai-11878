@@ -25,6 +25,11 @@ const WeatherModule = () => {
   useEffect(() => {
     fetchWeatherData();
     
+    // Fetch real weather data every 10 minutes
+    const weatherInterval = setInterval(() => {
+      fetchRealWeatherData();
+    }, 10 * 60 * 1000);
+    
     // Subscribe to realtime updates
     const channel = supabase
       .channel('weather-changes')
@@ -42,9 +47,18 @@ const WeatherModule = () => {
       .subscribe();
 
     return () => {
+      clearInterval(weatherInterval);
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const fetchRealWeatherData = async () => {
+    try {
+      await supabase.functions.invoke('fetch-weather');
+    } catch (error) {
+      console.error('Error fetching real weather data:', error);
+    }
+  };
 
   const fetchWeatherData = async () => {
     setLoading(true);
@@ -83,9 +97,9 @@ const WeatherModule = () => {
         <div className="flex items-start gap-3">
           <span className="text-2xl">⚠️</span>
           <div>
-            <h3 className="font-semibold text-accent">Predictive Alert</h3>
+            <h3 className="font-semibold text-accent">Weather Alert</h3>
             <p className="text-sm text-muted-foreground">
-              High humidity expected tomorrow. Stay hydrated and plan indoor activities.
+              Real-time data from Open-Meteo API. High humidity expected tomorrow — stay hydrated and plan indoor activities.
             </p>
           </div>
         </div>

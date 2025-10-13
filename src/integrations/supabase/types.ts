@@ -14,7 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      resource_data: {
+        Row: {
+          city: string
+          electricity_usage: number
+          id: string
+          timestamp: string
+          water_usage: number
+        }
+        Insert: {
+          city: string
+          electricity_usage: number
+          id?: string
+          timestamp?: string
+          water_usage: number
+        }
+        Update: {
+          city?: string
+          electricity_usage?: number
+          id?: string
+          timestamp?: string
+          water_usage?: number
+        }
+        Relationships: []
+      }
+      traffic_data: {
+        Row: {
+          alert_status: string
+          avg_speed: number | null
+          city: string
+          congestion_level: string
+          delay_minutes: number | null
+          id: string
+          route_name: string | null
+          timestamp: string
+        }
+        Insert: {
+          alert_status: string
+          avg_speed?: number | null
+          city: string
+          congestion_level: string
+          delay_minutes?: number | null
+          id?: string
+          route_name?: string | null
+          timestamp?: string
+        }
+        Update: {
+          alert_status?: string
+          avg_speed?: number | null
+          city?: string
+          congestion_level?: string
+          delay_minutes?: number | null
+          id?: string
+          route_name?: string | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
+      transport_data: {
+        Row: {
+          city: string
+          delay_minutes: number | null
+          id: string
+          line_number: string
+          predicted_crowding: string
+          route_name: string | null
+          timestamp: string
+          transport_type: string
+        }
+        Insert: {
+          city: string
+          delay_minutes?: number | null
+          id?: string
+          line_number: string
+          predicted_crowding: string
+          route_name?: string | null
+          timestamp?: string
+          transport_type: string
+        }
+        Update: {
+          city?: string
+          delay_minutes?: number | null
+          id?: string
+          line_number?: string
+          predicted_crowding?: string
+          route_name?: string | null
+          timestamp?: string
+          transport_type?: string
+        }
+        Relationships: []
+      }
+      weather_data: {
+        Row: {
+          air_quality: number | null
+          city: string
+          humidity: number | null
+          id: string
+          rainfall: number | null
+          temperature: number | null
+          timestamp: string
+          uv_index: number | null
+          visibility: number | null
+          windspeed: number | null
+        }
+        Insert: {
+          air_quality?: number | null
+          city: string
+          humidity?: number | null
+          id?: string
+          rainfall?: number | null
+          temperature?: number | null
+          timestamp?: string
+          uv_index?: number | null
+          visibility?: number | null
+          windspeed?: number | null
+        }
+        Update: {
+          air_quality?: number | null
+          city?: string
+          humidity?: number | null
+          id?: string
+          rainfall?: number | null
+          temperature?: number | null
+          timestamp?: string
+          uv_index?: number | null
+          visibility?: number | null
+          windspeed?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

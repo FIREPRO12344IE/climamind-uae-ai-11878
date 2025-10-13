@@ -1,1 +1,13 @@
 project_id = "riqzdvnggzfuvncmrzcs"
+
+[functions.climabot-chat]
+verify_jwt = false
+
+[functions.populate-sample-data]
+verify_jwt = false
+
+[functions.fetch-weather]
+verify_jwt = false
+
+[functions.populate-mock-data]
+verify_jwt = false

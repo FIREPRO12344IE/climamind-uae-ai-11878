@@ -23,6 +23,12 @@ const TrafficModule = () => {
 
   useEffect(() => {
     fetchTrafficData();
+    generateTrafficFromWeather();
+    
+    // Update traffic based on weather every 5 minutes
+    const trafficInterval = setInterval(() => {
+      generateTrafficFromWeather();
+    }, 5 * 60 * 1000);
     
     // Subscribe to realtime updates
     const channel = supabase
@@ -41,9 +47,56 @@ const TrafficModule = () => {
       .subscribe();
 
     return () => {
+      clearInterval(trafficInterval);
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const generateTrafficFromWeather = async () => {
+    // Fetch latest weather data to determine traffic conditions
+    const { data: weatherData } = await supabase
+      .from('weather_data')
+      .select('*')
+      .in('city', UAE_CITIES)
+      .order('timestamp', { ascending: false })
+      .limit(5);
+
+    if (!weatherData) return;
+
+    const trafficData = weatherData.map(weather => {
+      const visibility = weather.visibility || 10;
+      let congestionLevel = 'smooth';
+      let avgSpeed = 80;
+      let alertStatus = '🟢 Smooth';
+
+      if (visibility > 8) {
+        congestionLevel = 'smooth';
+        avgSpeed = 80 + Math.floor(Math.random() * 20);
+        alertStatus = '🟢 Smooth';
+      } else if (visibility > 4) {
+        congestionLevel = 'moderate';
+        avgSpeed = 50 + Math.floor(Math.random() * 20);
+        alertStatus = '🟡 Moderate';
+      } else {
+        congestionLevel = 'heavy';
+        avgSpeed = 20 + Math.floor(Math.random() * 20);
+        alertStatus = '🔴 Heavy';
+      }
+
+      return {
+        city: weather.city,
+        congestion_level: congestionLevel,
+        avg_speed: avgSpeed,
+        alert_status: alertStatus,
+        route_name: `Main Route ${weather.city}`,
+        delay_minutes: congestionLevel === 'heavy' ? Math.floor(Math.random() * 30) + 10 : 
+                      congestionLevel === 'moderate' ? Math.floor(Math.random() * 15) : 0,
+      };
+    });
+
+    // Insert traffic data
+    await supabase.from('traffic_data').insert(trafficData);
+  };
 
   const fetchTrafficData = async () => {
     setLoading(true);
@@ -76,6 +129,19 @@ const TrafficModule = () => {
 
   return (
     <div className="space-y-6">
+      {/* Alert Banner */}
+      <div className="glass-card p-4 border-l-4 border-accent hover-glow">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">🚦</span>
+          <div>
+            <h3 className="font-semibold text-accent">Traffic Intelligence</h3>
+            <p className="text-sm text-muted-foreground">
+              Traffic between Sharjah and Dubai will likely be heavy at 5 PM based on current visibility trends. Consider alternative routes.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* 3D Globe */}
       <TrafficGlobe trafficData={trafficData} />
 

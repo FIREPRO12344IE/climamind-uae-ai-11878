@@ -9,6 +9,7 @@ interface WeatherCardProps {
     air_quality: number;
     uv_index: number;
     rainfall: number;
+    visibility?: number;
   };
 }
 
@@ -64,13 +65,23 @@ const WeatherCard = ({ data }: WeatherCardProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 col-span-2">
+        <div className="flex items-center gap-2">
           <CloudRain className="w-4 h-4 text-blue-500" />
           <div>
             <p className="text-xs text-muted-foreground">Rainfall</p>
             <p className="text-sm font-semibold">{data.rainfall} mm</p>
           </div>
         </div>
+
+        {data.visibility !== undefined && (
+          <div className="flex items-center gap-2">
+            <Eye className="w-4 h-4 text-cyan-400" />
+            <div>
+              <p className="text-xs text-muted-foreground">Visibility</p>
+              <p className="text-sm font-semibold">{data.visibility.toFixed(1)} km</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

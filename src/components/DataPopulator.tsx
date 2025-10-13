@@ -24,15 +24,19 @@ const DataPopulator = () => {
   const populateData = async () => {
     setIsPopulating(true);
     try {
-      const { error } = await supabase.functions.invoke('populate-sample-data');
+      // Load real weather data
+      const { error: weatherError } = await supabase.functions.invoke('fetch-weather');
+      if (weatherError) throw weatherError;
+
+      // Load mock resource and transport data
+      const { error: mockError } = await supabase.functions.invoke('populate-mock-data');
+      if (mockError) throw mockError;
       
-      if (error) throw error;
-      
-      toast.success("Sample data loaded successfully!");
+      toast.success("Real weather data and sample data loaded successfully!");
       setHasData(true);
     } catch (error) {
       console.error('Error:', error);
-      toast.error("Failed to load sample data");
+      toast.error("Failed to load data");
     } finally {
       setIsPopulating(false);
     }
@@ -47,7 +51,7 @@ const DataPopulator = () => {
         <div>
           <h2 className="text-2xl font-bold mb-2">Welcome to ClimaMind UAE</h2>
           <p className="text-muted-foreground">
-            Load sample data to see the dashboard in action with real-time weather and traffic information.
+            Load real-time data to see the dashboard in action with live weather from Open-Meteo API, simulated traffic, resources, and transport.
           </p>
         </div>
         <Button 

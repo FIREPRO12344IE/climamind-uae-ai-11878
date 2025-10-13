@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WeatherModule from "./weather/WeatherModule";
 import TrafficModule from "./traffic/TrafficModule";
+import ResourceModule from "./resource/ResourceModule";
+import TransportModule from "./transport/TransportModule";
 import ClimaBot from "./ai/ClimaBot";
 import DataPopulator from "./DataPopulator";
 
@@ -43,18 +45,30 @@ const Dashboard = () => {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="glass-card p-1 h-auto">
+          <TabsList className="glass-card p-1 h-auto grid grid-cols-2 md:grid-cols-4">
             <TabsTrigger 
               value="weather" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-8 py-3 text-base"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
-              🌤 Weather Insights
+              🌤 Weather
             </TabsTrigger>
             <TabsTrigger 
               value="traffic" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-8 py-3 text-base"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
-              🚦 Traffic Intelligence
+              🚦 Traffic
+            </TabsTrigger>
+            <TabsTrigger 
+              value="resources" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
+            >
+              ⚡ Resources
+            </TabsTrigger>
+            <TabsTrigger 
+              value="transport" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
+            >
+              🚍 Transport
             </TabsTrigger>
           </TabsList>
 
@@ -64,6 +78,14 @@ const Dashboard = () => {
 
           <TabsContent value="traffic" className="space-y-6">
             <TrafficModule />
+          </TabsContent>
+
+          <TabsContent value="resources" className="space-y-6">
+            <ResourceModule />
+          </TabsContent>
+
+          <TabsContent value="transport" className="space-y-6">
+            <TransportModule />
           </TabsContent>
         </Tabs>
       </main>
