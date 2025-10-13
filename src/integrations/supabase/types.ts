@@ -14,75 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      traffic_data: {
-        Row: {
-          alert_status: string
-          avg_speed: number | null
-          city: string
-          congestion_level: string
-          delay_minutes: number | null
-          id: string
-          route_name: string | null
-          timestamp: string
-        }
-        Insert: {
-          alert_status: string
-          avg_speed?: number | null
-          city: string
-          congestion_level: string
-          delay_minutes?: number | null
-          id?: string
-          route_name?: string | null
-          timestamp?: string
-        }
-        Update: {
-          alert_status?: string
-          avg_speed?: number | null
-          city?: string
-          congestion_level?: string
-          delay_minutes?: number | null
-          id?: string
-          route_name?: string | null
-          timestamp?: string
-        }
-        Relationships: []
-      }
-      weather_data: {
-        Row: {
-          air_quality: number | null
-          city: string
-          humidity: number | null
-          id: string
-          rainfall: number | null
-          temperature: number | null
-          timestamp: string
-          uv_index: number | null
-          windspeed: number | null
-        }
-        Insert: {
-          air_quality?: number | null
-          city: string
-          humidity?: number | null
-          id?: string
-          rainfall?: number | null
-          temperature?: number | null
-          timestamp?: string
-          uv_index?: number | null
-          windspeed?: number | null
-        }
-        Update: {
-          air_quality?: number | null
-          city?: string
-          humidity?: number | null
-          id?: string
-          rainfall?: number | null
-          temperature?: number | null
-          timestamp?: string
-          uv_index?: number | null
-          windspeed?: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
