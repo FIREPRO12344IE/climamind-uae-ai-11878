@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import ResourceCard from "./ResourceCard";
+import PowerCard from "./PowerCard";
+import WaterCard from "./WaterCard";
 import ResourceChart from "./ResourceChart";
 import { Loader2 } from "lucide-react";
 
@@ -15,13 +16,11 @@ interface ResourceData {
 const UAE_CITIES = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah"];
 
 const ResourceModule = () => {
-  const [resourceData, setResourceData] = useState<ResourceData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchResourceData();
-    
-    // Subscribe to realtime updates
+
     const channel = supabase
       .channel('resource-changes')
       .on(
@@ -44,7 +43,7 @@ const ResourceModule = () => {
 
   const fetchResourceData = async () => {
     setLoading(true);
-    
+
     const { data, error } = await supabase
       .from('resource_data')
       .select('*')
@@ -52,13 +51,11 @@ const ResourceModule = () => {
       .order('timestamp', { ascending: false });
 
     if (!error && data) {
-      const latestByCity = UAE_CITIES.map(city => 
+      const latestByCity = UAE_CITIES.map(city =>
         data.find(d => d.city === city)
       ).filter(Boolean) as ResourceData[];
-      
-      setResourceData(latestByCity);
     }
-    
+
     setLoading(false);
   };
 
@@ -71,11 +68,10 @@ const ResourceModule = () => {
   }
 
   const currentHour = new Date().getHours();
-  const isPeakHours = currentHour >= 17 && currentHour <= 19;
+  const isPeakHours = currentHour >= 17 && currentHour <= 22;
 
   return (
     <div className="space-y-6">
-      {/* Alert Banner */}
       {isPeakHours && (
         <div className="glass-card p-4 border-l-4 border-accent hover-glow">
           <div className="flex items-start gap-3">
@@ -83,22 +79,31 @@ const ResourceModule = () => {
             <div>
               <h3 className="font-semibold text-accent">Peak Hours Alert</h3>
               <p className="text-sm text-muted-foreground">
-                Peak electricity usage expected 5–7 PM — consider reducing AC load to help city resources.
+                Peak electricity usage expected 6 PM – 10 PM — consider reducing AC load to help city resources.
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Resource Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resourceData.map((data) => (
-          <ResourceCard key={data.id} data={data} />
-        ))}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Power Consumption</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <PowerCard type="residential" initialValue={450} />
+          <PowerCard type="commercial" initialValue={680} />
+          <PowerCard type="renewable" initialValue={320} />
+        </div>
       </div>
 
-      {/* Resource Chart */}
-      <ResourceChart />
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Water Management</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <WaterCard />
+          <div className="glass-card p-6">
+            <ResourceChart />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

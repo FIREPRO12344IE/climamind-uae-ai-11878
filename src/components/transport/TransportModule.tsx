@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import TransportCard from "./TransportCard";
+import TransportTimeline from "./TransportTimeline";
 import { Loader2 } from "lucide-react";
 
 interface TransportData {
@@ -74,7 +75,6 @@ const TransportModule = () => {
 
   return (
     <div className="space-y-6">
-      {/* Alert Banner */}
       <div className="glass-card p-4 border-l-4 border-accent hover-glow">
         <div className="flex items-start gap-3">
           <span className="text-2xl">🚍</span>
@@ -87,45 +87,48 @@ const TransportModule = () => {
         </div>
       </div>
 
-      {/* Filter Buttons */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'all' 
-              ? 'bg-primary text-primary-foreground' 
-              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          }`}
-        >
-          All Transport
-        </button>
-        <button
-          onClick={() => setFilter('bus')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'bus' 
-              ? 'bg-primary text-primary-foreground' 
-              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          }`}
-        >
-          🚌 Buses
-        </button>
-        <button
-          onClick={() => setFilter('train')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'train' 
-              ? 'bg-primary text-primary-foreground' 
-              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          }`}
-        >
-          🚇 Metro
-        </button>
-      </div>
+      <TransportTimeline />
 
-      {/* Transport Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {transportData.map((data) => (
-          <TransportCard key={data.id} data={data} />
-        ))}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Live Transport Status</h3>
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              filter === 'all'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            All Transport
+          </button>
+          <button
+            onClick={() => setFilter('bus')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              filter === 'bus'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            🚌 Buses
+          </button>
+          <button
+            onClick={() => setFilter('train')}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              filter === 'train'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            🚇 Metro
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {transportData.map((data) => (
+            <TransportCard key={data.id} data={data} />
+          ))}
+        </div>
       </div>
     </div>
   );

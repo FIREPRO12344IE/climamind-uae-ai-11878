@@ -4,6 +4,7 @@ import WeatherModule from "./weather/WeatherModule";
 import TrafficModule from "./traffic/TrafficModule";
 import ResourceModule from "./resource/ResourceModule";
 import TransportModule from "./transport/TransportModule";
+import WasteModule from "./waste/WasteModule";
 import ClimaBot from "./ai/ClimaBot";
 import DataPopulator from "./DataPopulator";
 
@@ -45,30 +46,36 @@ const Dashboard = () => {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="glass-card p-1 h-auto grid grid-cols-2 md:grid-cols-4">
-            <TabsTrigger 
-              value="weather" 
+          <TabsList className="glass-card p-1 h-auto grid grid-cols-2 md:grid-cols-5">
+            <TabsTrigger
+              value="weather"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
               🌤 Weather
             </TabsTrigger>
-            <TabsTrigger 
-              value="traffic" 
+            <TabsTrigger
+              value="traffic"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
               🚦 Traffic
             </TabsTrigger>
-            <TabsTrigger 
-              value="resources" 
+            <TabsTrigger
+              value="resources"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
               ⚡ Resources
             </TabsTrigger>
-            <TabsTrigger 
-              value="transport" 
+            <TabsTrigger
+              value="transport"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
               🚍 Transport
+            </TabsTrigger>
+            <TabsTrigger
+              value="waste"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
+            >
+              ♻️ Waste
             </TabsTrigger>
           </TabsList>
 
@@ -86,6 +93,10 @@ const Dashboard = () => {
 
           <TabsContent value="transport" className="space-y-6">
             <TransportModule />
+          </TabsContent>
+
+          <TabsContent value="waste" className="space-y-6">
+            <WasteModule />
           </TabsContent>
         </Tabs>
       </main>
