@@ -73,7 +73,7 @@ const WeatherCard = ({ data }: WeatherCardProps) => {
           </div>
         </div>
 
-        {data.visibility !== undefined && (
+        {data.visibility != null && (
           <div className="flex items-center gap-2">
             <Eye className="w-4 h-4 text-cyan-400" />
             <div>
