@@ -7,9 +7,10 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
-  // Ensure Supabase envs are always defined (fallback to project id)
-  const supabaseUrl = env.VITE_SUPABASE_URL || (env.VITE_SUPABASE_PROJECT_ID ? `https://${env.VITE_SUPABASE_PROJECT_ID}.supabase.co` : "");
-  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY || "";
+  // Hardcoded Lovable Cloud credentials (publishable keys - safe to commit)
+  const supabaseUrl = env.VITE_SUPABASE_URL || "https://riqzdvnggzfuvncmrzcs.supabase.co";
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcXpkdm5nZ3pmdXZuY21yemNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDI1NDEsImV4cCI6MjA3NTg3ODU0MX0.p_qiRe7mxjf0wA6G062593HjZNYyBdFr74MjobEDhPY";
+  const supabaseProjectId = env.VITE_SUPABASE_PROJECT_ID || "riqzdvnggzfuvncmrzcs";
 
   return {
     server: {
@@ -25,7 +26,7 @@ export default defineConfig(({ mode }) => {
     define: {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
       "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(supabaseKey),
-      "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(env.VITE_SUPABASE_PROJECT_ID || ""),
+      "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(supabaseProjectId),
     },
   };
 });
