@@ -131,8 +131,22 @@ ${weatherContext}`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
-      throw new Error(`AI Gateway error: ${response.status}`);
+      console.error('OpenAI API error:', response.status, errorText);
+      
+      let errorMessage = "I'm having trouble responding right now.";
+      
+      if (response.status === 429) {
+        errorMessage = "⚠️ OpenAI API quota exceeded. Please check your API key's billing and usage limits at platform.openai.com";
+      } else if (response.status === 401) {
+        errorMessage = "⚠️ Invalid OpenAI API key. Please check your API key configuration.";
+      } else if (response.status >= 500) {
+        errorMessage = "⚠️ OpenAI service is temporarily unavailable. Please try again in a moment.";
+      }
+      
+      return new Response(
+        JSON.stringify({ response: errorMessage }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await response.json();

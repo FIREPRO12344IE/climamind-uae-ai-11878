@@ -34,7 +34,14 @@ const ClimaBot = () => {
         body: { message: userMessage }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        setMessages(prev => [...prev, { 
+          role: "assistant", 
+          content: "⚠️ Connection error. Please check your internet connection and try again."
+        }]);
+        return;
+      }
 
       setMessages(prev => [...prev, { 
         role: "assistant", 
