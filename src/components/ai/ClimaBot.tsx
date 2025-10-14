@@ -15,7 +15,7 @@ const ClimaBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm ClimaBot, your AI assistant for UAE climate and traffic insights. Ask me anything!"
+      content: "Hi! I'm ClimaBot 🤖 Your AI weather assistant for UAE cities.\n\nTry asking:\n• Can I go jogging right now?\n• Will it rain in the next hour?\n• Is it too hot outside?\n• What's the UV index near me?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -98,7 +98,7 @@ const ClimaBot = () => {
                       : "bg-muted"
                   }`}
                 >
-                  <p className="text-sm">{msg.content}</p>
+                  <p className="text-sm whitespace-pre-line">{msg.content}</p>
                 </div>
               </div>
             ))}

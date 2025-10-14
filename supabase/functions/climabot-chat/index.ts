@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0';
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
@@ -19,26 +20,98 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are ClimaBot, an AI assistant for the ClimaMind UAE Smart City Dashboard. 
-You help users understand weather, traffic, resource usage, and public transport patterns in UAE cities (Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah).
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-Your personality: Smart, quick, concise, and slightly friendly.
+    // Fetch latest weather data for all UAE cities
+    const { data: weatherData } = await supabase
+      .from('weather_data')
+      .select('*')
+      .in('city', ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah'])
+      .order('timestamp', { ascending: false })
+      .limit(10);
 
-You can answer questions about:
-- Weather conditions (temperature, humidity, air quality, UV index, rainfall, visibility)
-- Traffic conditions (congestion levels based on visibility and weather)
-- Resource planning (electricity and water usage trends, peak hours)
-- Public transport (bus and metro schedules, crowding levels, optimal routes)
-- Predictions and trends based on real-time and historical data
-- Best times to travel, do outdoor activities, or reduce resource consumption
+    // Get latest reading for each city
+    const latestWeather = weatherData?.reduce((acc: any, curr: any) => {
+      if (!acc[curr.city] || new Date(curr.timestamp) > new Date(acc[curr.city].timestamp)) {
+        acc[curr.city] = curr;
+      }
+      return acc;
+    }, {});
 
-Key insights to share:
-- Traffic is derived from visibility: >8km = Smooth 🟢, 4-8km = Moderate 🟡, <4km = Heavy 🔴
-- Peak electricity usage is typically 5-7 PM — recommend AC reduction during these hours
-- Suggest alternative transport routes to reduce congestion
-- Provide safety recommendations based on weather conditions
+    // Simple prediction: analyze trends from last 2 hours of data
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    const { data: historicalData } = await supabase
+      .from('weather_data')
+      .select('*')
+      .gte('timestamp', twoHoursAgo)
+      .order('timestamp', { ascending: true });
 
-Keep responses brief and actionable. Use emojis sparingly but effectively.`;
+    // Calculate trends for predictions
+    const predictions: any = {};
+    if (historicalData && historicalData.length > 0) {
+      ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah'].forEach(city => {
+        const cityData = historicalData.filter((d: any) => d.city === city);
+        if (cityData.length >= 2) {
+          const latest = cityData[cityData.length - 1];
+          const previous = cityData[0];
+          
+          predictions[city] = {
+            tempTrend: latest.temperature - previous.temperature > 0 ? 'rising' : 'falling',
+            tempChange: (latest.temperature - previous.temperature).toFixed(1),
+            humidityTrend: latest.humidity - previous.humidity > 0 ? 'rising' : 'falling',
+            rainfallRisk: latest.humidity > 80 ? 'high' : latest.humidity > 60 ? 'medium' : 'low'
+          };
+        }
+      });
+    }
+
+    const weatherContext = `
+CURRENT REAL-TIME WEATHER DATA:
+${Object.entries(latestWeather || {}).map(([city, data]: [string, any]) => `
+${city}:
+- Temperature: ${data.temperature}°C
+- Humidity: ${data.humidity}%
+- Wind Speed: ${data.windspeed} km/h
+- Air Quality: ${data.air_quality} (${data.air_quality < 50 ? 'Good' : data.air_quality < 100 ? 'Moderate' : 'Poor'})
+- UV Index: ${data.uv_index}
+- Visibility: ${data.visibility} km
+- Rainfall: ${data.rainfall} mm
+`).join('\n')}
+
+NEXT HOUR PREDICTIONS:
+${Object.entries(predictions).map(([city, pred]: [string, any]) => `
+${city}:
+- Temperature trend: ${pred.tempTrend} (${pred.tempChange > 0 ? '+' : ''}${pred.tempChange}°C in last 2h)
+- Humidity trend: ${pred.humidityTrend}
+- Rainfall risk: ${pred.rainfallRisk}
+`).join('\n')}
+`;
+
+    const systemPrompt = `You are ClimaBot, an AI weather assistant for UAE cities.
+
+Your personality: Smart, friendly, and helpful. Answer naturally like a knowledgeable friend.
+
+You MUST answer questions like:
+- "Can I go jogging right now?" → Check temperature, UV index, air quality
+- "Will it rain in the next hour?" → Use predictions data
+- "Is it too hot to go outside?" → Consider temperature + UV index
+- "What's the UV index near me?" → Provide current UV data
+
+Use the REAL-TIME DATA and PREDICTIONS provided above to give accurate answers.
+
+Activity recommendations:
+- Jogging: Safe if temp < 35°C, UV < 6, air quality < 100
+- Outdoor activities: Avoid if temp > 38°C or UV > 8
+- Rain gear needed: If rainfall risk is high or humidity > 85%
+
+Keep responses brief, friendly, and actionable. Use relevant emojis (☀️ 🌧️ 💧 🏃).
+
+${weatherContext}`;
+
+    console.log('System prompt:', systemPrompt);
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
