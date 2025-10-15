@@ -108,22 +108,60 @@ CURRENT OCTOBER WEATHER PATTERN:
 - Rain chance: 0% (no rain expected until late November)
 - Wind: 10-24 km/h
 
-DETAILED CITY INFO:
-Dubai Tomorrow:
-- High: 32°C, Low: 27°C
-- Sunrise: 06:18, Sunset: 17:51
-- 11 hours of sunlight
-- Morning: 27°C, Noon: 32°C, Evening: 31°C, Night: 29°C
+DETAILED CITY INFO & HOURLY FORECASTS:
 
-Sharjah Today:
-- High: 33°C, Low: 28°C
-- Sunrise: 06:17, Sunset: 17:51
-- Similar conditions to Dubai
+Dubai Tomorrow (Thu Oct 16):
+- High: 32°C, Low: 27°C, Rain: 0%, Wind: 5-24 km/h, Humidity: 47-72%
+- Sunrise: 06:18, Sunset: 17:51 (11 hours sunlight)
+- Hourly breakdown:
+  00:00 - 28°C Clear, 69% humidity, 5km/h NE wind, UV 0
+  03:00 - 28°C Clear, 72% humidity, 10km/h ENE wind, UV 0
+  06:00 - 27°C Clear, 70% humidity, 15km/h ESE wind, UV 0
+  09:00 - 29°C Sunny, 53% humidity, 24km/h S wind, UV 2
+  12:00 - 32°C Sunny, 47% humidity, 14km/h WSW wind, UV 7 (High)
+  15:00 - 31°C Sunny, 54% humidity, 23km/h NW wind, UV 3
+  18:00 - 30°C Clear, 61% humidity, 20km/h N wind, UV 0
+  21:00 - 29°C Clear, 60% humidity, 12km/h NE wind, UV 0
+- Morning feels like 29°C, Noon feels like 35°C
+- Recommendation: Sunglasses + T-shirt
 
-Abu Dhabi Today:
-- High: 31°C, Low: 30°C
-- Sunrise: 06:20, Sunset: 17:56
-- Slightly cooler than Dubai/Sharjah
+Sharjah Today (Wed Oct 15):
+- High: 33°C, Low: 28°C, Rain: 0%, Wind: 4-19 km/h, Humidity: 50-70%
+- Sunrise: 06:17, Sunset: 17:51 (11 hours sunlight)
+- Hourly breakdown:
+  00:00 - 29°C Clear, 69% humidity, 10km/h NNW wind
+  03:00 - 28°C Clear, 68% humidity, 4km/h NNW wind
+  06:00 - 28°C Clear, 70% humidity, 7km/h SSE wind
+  09:00 - 30°C Sunny, 60% humidity, 10km/h SSW wind, UV 2
+  12:00 - 32°C Sunny, 50% humidity, 15km/h W wind, UV 7 (High)
+  15:00 - 33°C Sunny, 63% humidity, 19km/h WNW wind, UV 3
+  18:00 - 30°C Clear, 67% humidity, 18km/h NW wind
+  21:00 - 29°C Clear, 69% humidity, 4km/h NNE wind
+- Morning feels like 30°C, Noon feels like 36°C
+- Recommendation: Sunglasses + T-shirt
+
+Abu Dhabi Today (Wed Oct 15):
+- High: 31°C, Low: 30°C, Rain: 0%, Wind: 8-22 km/h, Humidity: 56-70%
+- Sunrise: 06:20, Sunset: 17:56 (11 hours sunlight)
+- Hourly breakdown:
+  00:00 - 30°C Clear, 70% humidity, 19km/h NNW wind
+  03:00 - 30°C Clear, 67% humidity, 13km/h NW wind
+  06:00 - 30°C Clear, 65% humidity, 8km/h N wind
+  09:00 - 31°C Sunny, 61% humidity, 10km/h NNW wind, UV 2
+  12:00 - 31°C Sunny, 58% humidity, 14km/h NW wind, UV 7 (High)
+  15:00 - 34°C Sunny, 56% humidity, 16km/h NW wind, UV 4
+  18:00 - 30°C Clear, 68% humidity, 22km/h NW wind
+  21:00 - 30°C Clear, 69% humidity, 20km/h NNW wind
+- Morning feels like 34°C, Noon feels like 35°C
+- Recommendation: Sunglasses + T-shirt
+
+14-DAY FORECAST TREND (Dubai):
+Oct 15: 32/28°C Clear | Oct 16: 32/27°C Clear | Oct 17: 32/27°C Clear
+Oct 18: 32/27°C Clear | Oct 19: 31/27°C Clear | Oct 20: 31/27°C Clear
+Oct 21: 32/27°C Clear | Oct 22: 31/27°C Clear | Oct 23: 30/27°C Clear
+Oct 24: 31/26°C Clear | Oct 25: 30/28°C Clear | Oct 26: 30/26°C Clear
+Oct 27: 31/28°C Clear | Oct 28: 31/28°C Clear
+All days: 0mm rain, consistent sunny/clear conditions
 `;
 
     const systemPrompt = `You are ClimaBot, an AI weather and traffic assistant for UAE cities (Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah).
