@@ -213,19 +213,58 @@ const ClimaBot = () => {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
+                  className={`max-w-[85%] p-4 rounded-lg ${
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
+                      : "bg-muted/80 border border-border/50"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-line">{msg.content}</p>
+                  <div className="text-sm space-y-2">
+                    {msg.content.split('\n').map((line, lineIdx) => {
+                      // Check if line is a header (starts with emoji or bullet)
+                      const isHeader = /^[🌤️🏃‍♂️🚦⚡🌍💡🔴🟡🟢⚠️✅❌]/u.test(line);
+                      const isBullet = /^[•\-–—]/.test(line.trim());
+                      
+                      if (line.trim() === '') {
+                        return <div key={lineIdx} className="h-2" />;
+                      }
+                      
+                      if (isHeader) {
+                        return (
+                          <div key={lineIdx} className="font-semibold text-base">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      if (isBullet) {
+                        return (
+                          <div key={lineIdx} className="pl-2 text-muted-foreground">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Bold text between ** or __
+                      const formattedLine = line
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                        .replace(/__(.*?)__/g, '<strong class="font-bold">$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+                      
+                      return (
+                        <div 
+                          key={lineIdx}
+                          dangerouslySetInnerHTML={{ __html: formattedLine }}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted p-3 rounded-lg">
+                <div className="bg-muted p-3 rounded-lg border border-border/50">
                   <div className="flex gap-1">
                     <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
                     <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
