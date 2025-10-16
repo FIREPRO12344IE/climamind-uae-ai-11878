@@ -220,7 +220,7 @@ RESPONSE STYLE:
 
 ${weatherContext}`;
 
-    console.log('System prompt:', systemPrompt);
+    console.log('Received message:', message);
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -233,8 +233,7 @@ ${weatherContext}`;
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
-        ],
-        temperature: 0.7,
+        ]
       }),
     });
 

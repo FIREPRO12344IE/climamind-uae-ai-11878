@@ -247,7 +247,7 @@ const ClimaBot = () => {
                 className="flex-1"
                 disabled={isLoading}
               />
-              <Button onClick={sendMessage} disabled={isLoading} size="icon">
+              <Button onClick={() => sendMessage()} disabled={isLoading} size="icon">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
