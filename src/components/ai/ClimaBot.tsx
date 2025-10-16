@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,28 +10,88 @@ interface Message {
   content: string;
 }
 
+interface QuestionCategory {
+  title: string;
+  emoji: string;
+  questions: string[];
+}
+
+const questionCategories: QuestionCategory[] = [
+  {
+    title: "Weather Questions",
+    emoji: "🌤️",
+    questions: [
+      "Can I go jogging right now?",
+      "Will it rain in the next hour?",
+      "Is it too hot outside?",
+      "What's the UV index near me?",
+      "How windy is it today?",
+      "Is it safe to go cycling now?",
+      "What's the temperature in Abu Dhabi?",
+      "Do I need sunglasses now?",
+      "Is it humid in Sharjah right now?",
+      "What's the air quality index?"
+    ]
+  },
+  {
+    title: "Outdoor Activity & Lifestyle",
+    emoji: "🏃‍♂️",
+    questions: [
+      "Can I jog in Abu Dhabi Marina?",
+      "Is it too humid for outdoor workouts?",
+      "Should I wear a cap now?",
+      "Can I go hiking in Hatta?",
+      "Is it safe to go swimming now?",
+      "Should I postpone my run due to heat?",
+      "Is it sunny enough for photography?",
+      "Can I take my dog for a walk now?",
+      "Is it a good time for outdoor yoga?",
+      "Should I go for a bike ride today?"
+    ]
+  },
+  {
+    title: "Traffic & Roads",
+    emoji: "🚦",
+    questions: [
+      "How's traffic on Sheikh Zayed Road?",
+      "Is there traffic in Dubai Marina?",
+      "Are there road closures in Abu Dhabi?",
+      "How long to reach Dubai Mall from Downtown?",
+      "Is it busy near Al Maktoum Airport?",
+      "Is there construction on Sheikh Khalifa Road?",
+      "Any accidents reported today?",
+      "How's traffic near Mall of the Emirates?",
+      "Are the roads wet right now?",
+      "Is it a good time to commute to Abu Dhabi?"
+    ]
+  }
+];
+
 const ClimaBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showQuestions, setShowQuestions] = useState(true);
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm ClimaBot 🤖 Your AI weather assistant for UAE cities.\n\nTry asking:\n• Can I go jogging right now?\n• Will it rain in the next hour?\n• Is it too hot outside?\n• What's the UV index near me?"
+      content: "Hi! I'm ClimaBot 🤖 Your AI weather and traffic assistant for UAE.\n\nClick on any question below to get started, or type your own!"
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (questionText?: string) => {
+    const messageToSend = questionText || input.trim();
+    if (!messageToSend || isLoading) return;
 
-    const userMessage = input.trim();
     setInput("");
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setShowQuestions(false);
+    setMessages(prev => [...prev, { role: "user", content: messageToSend }]);
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('climabot-chat', {
-        body: { message: userMessage }
+        body: { message: messageToSend }
       });
 
       if (error) {
@@ -50,10 +110,14 @@ const ClimaBot = () => {
     } catch (error) {
       console.error('Chat error:', error);
       toast.error("Failed to get response. Please try again.");
-      setMessages(prev => prev.slice(0, -1)); // Remove user message on error
+      setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleQuestionClick = (question: string) => {
+    sendMessage(question);
   };
 
   return (
@@ -69,7 +133,7 @@ const ClimaBot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] glass-card flex flex-col z-50 overflow-hidden">
+        <div className="fixed bottom-24 right-6 w-96 h-[600px] glass-card flex flex-col z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/50 bg-primary/5">
             <div className="flex items-center gap-2">
@@ -81,15 +145,65 @@ const ClimaBot = () => {
                 <p className="text-xs text-muted-foreground">AI Assistant</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="h-8 w-8"
-            >
-              <X className="w-4 h-4" />
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowQuestions(!showQuestions)}
+                className="h-8 w-8"
+              >
+                {showQuestions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                className="h-8 w-8"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
+
+          {/* Preloaded Questions */}
+          {showQuestions && (
+            <div className="border-b border-border/50 bg-background/50 max-h-64 overflow-y-auto">
+              <div className="p-3 space-y-2">
+                {questionCategories.map((category, catIdx) => (
+                  <div key={catIdx} className="space-y-1">
+                    <button
+                      onClick={() => setExpandedCategory(expandedCategory === catIdx ? null : catIdx)}
+                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-accent/20 transition-colors text-left"
+                    >
+                      <span className="text-xs font-semibold flex items-center gap-2">
+                        <span>{category.emoji}</span>
+                        {category.title}
+                      </span>
+                      {expandedCategory === catIdx ? (
+                        <ChevronUp className="w-3 h-3" />
+                      ) : (
+                        <ChevronDown className="w-3 h-3" />
+                      )}
+                    </button>
+                    {expandedCategory === catIdx && (
+                      <div className="space-y-1 pl-2">
+                        {category.questions.slice(0, 5).map((question, qIdx) => (
+                          <button
+                            key={qIdx}
+                            onClick={() => handleQuestionClick(question)}
+                            className="w-full text-left text-xs p-2 rounded hover:bg-primary/10 transition-colors text-muted-foreground hover:text-foreground"
+                            disabled={isLoading}
+                          >
+                            {question}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">

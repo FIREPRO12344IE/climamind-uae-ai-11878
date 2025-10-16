@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0';
 
-const DEEPSEEK_API_KEY = Deno.env.get("DEEPSEEK_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,8 +16,8 @@ serve(async (req) => {
   try {
     const { message } = await req.json();
 
-    if (!DEEPSEEK_API_KEY) {
-      throw new Error("DEEPSEEK_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     // Initialize Supabase client
@@ -222,14 +222,14 @@ ${weatherContext}`;
 
     console.log('System prompt:', systemPrompt);
 
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
@@ -240,16 +240,18 @@ ${weatherContext}`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('DeepSeek API error:', response.status, errorText);
+      console.error('Lovable AI API error:', response.status, errorText);
       
       let errorMessage = "I'm having trouble responding right now.";
       
       if (response.status === 429) {
-        errorMessage = "⚠️ DeepSeek API quota exceeded. Please check your API key's billing and usage limits.";
+        errorMessage = "⚠️ Rate limit exceeded. Please try again in a moment.";
+      } else if (response.status === 402) {
+        errorMessage = "⚠️ AI usage limit reached. Please add credits to your workspace.";
       } else if (response.status === 401) {
-        errorMessage = "⚠️ Invalid DeepSeek API key. Please check your API key configuration.";
+        errorMessage = "⚠️ Invalid API key. Please check your configuration.";
       } else if (response.status >= 500) {
-        errorMessage = "⚠️ DeepSeek service is temporarily unavailable. Please try again in a moment.";
+        errorMessage = "⚠️ AI service is temporarily unavailable. Please try again in a moment.";
       }
       
       return new Response(
