@@ -86,11 +86,88 @@ const ResourceModule = () => {
         </div>
       )}
 
-      <div className="glass-card p-6">
-        <h3 className="text-xl font-semibold mb-4">Resource Overview</h3>
-        <p className="text-muted-foreground">
-          Monitor real-time power and water consumption across UAE cities.
-        </p>
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-xl font-semibold mb-4">⚡ Power Consumption</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                🏠 Residential Power Consumption
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Average Daily Use:</span> Approximately 200 kWh per household.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">Enerdata</a>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                🏢 Commercial Power Consumption
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Average Daily Use:</span> Around 200 kWh per establishment.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">Enerdata</a>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                🌞 Renewable Energy Consumption
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Average Daily Use:</span> Approximately 321 kWh per capita.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">Enerdata</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-semibold mb-4">💧 Water Management</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                💦 Water Usage
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Daily Consumption:</span> Approximately 550 liters per person.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">Grc</a>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                🏙️ Sharjah Conservation Update
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Water Waste Reduction:</span> Reduced by 12% this week.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">AP News</a>
+              </div>
+            </div>
+
+            <div className="glass-card p-6 space-y-3">
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                📊 Resource Usage Trends
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Electricity Generation Mix:</span> In 2023, the UAE's electricity generation was approximately 28% low-carbon, with 72% from fossil fuels.
+                </p>
+                <a href="#" className="text-xs text-primary hover:underline">Ember Energy</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
