@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import WeatherCard from "./WeatherCard";
 import WeatherChart from "./WeatherChart";
-import { Loader2 } from "lucide-react";
+import { Loader2, MessageSquare, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 interface WeatherData {
   id: string;
@@ -21,6 +24,10 @@ const UAE_CITIES = ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah"];
 const WeatherModule = () => {
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [aiMessages, setAiMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAiChat, setShowAiChat] = useState(false);
 
   useEffect(() => {
     fetchWeatherData();
@@ -82,6 +89,37 @@ const WeatherModule = () => {
     setLoading(false);
   };
 
+  const sendAiMessage = async () => {
+    if (!aiInput.trim() || aiLoading) return;
+
+    const userMessage = aiInput;
+    setAiInput("");
+    setAiMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setAiLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('climabot-chat', {
+        body: { message: userMessage }
+      });
+
+      if (error) throw error;
+
+      setAiMessages(prev => [...prev, { role: "assistant", content: data.response }]);
+    } catch (error) {
+      console.error('AI Error:', error);
+      toast.error("Failed to get AI response. Please try again.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const quickQuestions = [
+    "Can I go jogging right now?",
+    "Will it rain today?",
+    "What's the UV index?",
+    "Is it too hot outside?"
+  ];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -92,6 +130,126 @@ const WeatherModule = () => {
 
   return (
     <div className="space-y-6">
+      {/* AI Weather Assistant Banner */}
+      <div className="glass-card p-6 border-l-4 border-primary hover-glow">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3 flex-1">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                ClimaBot AI Assistant
+                <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary">Powered by Lovable AI</span>
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Ask me anything about UAE weather, traffic, or activity recommendations based on real-time data!
+              </p>
+              {!showAiChat && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {quickQuestions.map((q, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setShowAiChat(true);
+                        setAiInput(q);
+                      }}
+                      className="text-xs px-3 py-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowAiChat(!showAiChat)}
+            variant={showAiChat ? "secondary" : "default"}
+            size="sm"
+            className="shrink-0"
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            {showAiChat ? "Hide Chat" : "Open Chat"}
+          </Button>
+        </div>
+
+        {/* AI Chat Interface */}
+        {showAiChat && (
+          <div className="mt-6 space-y-4 border-t border-border/50 pt-4">
+            <div className="h-[300px] overflow-y-auto space-y-3 pr-2">
+              {aiMessages.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-center">
+                  <div>
+                    <Sparkles className="w-12 h-12 mx-auto text-primary/50 mb-3" />
+                    <p className="text-sm text-muted-foreground">
+                      Ask me about weather conditions, traffic, or outdoor activities!
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                aiMessages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[85%] p-4 rounded-lg ${
+                        msg.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted/80 border border-border/50"
+                      }`}
+                    >
+                      <div className="text-sm space-y-2">
+                        {msg.content.split('\n').map((line, lineIdx) => {
+                          const isHeader = /^[🌤️🏃‍♂️🚦⚡🌍💡🔴🟡🟢⚠️✅❌]/u.test(line);
+                          const isBullet = /^[•\-–—]/.test(line.trim());
+                          
+                          if (line.trim() === '') return <div key={lineIdx} className="h-2" />;
+                          if (isHeader) return <div key={lineIdx} className="font-semibold text-base">{line}</div>;
+                          if (isBullet) return <div key={lineIdx} className="pl-2 text-muted-foreground">{line}</div>;
+                          
+                          const formattedLine = line
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                            .replace(/__(.*?)__/g, '<strong class="font-bold">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+                          
+                          return <div key={lineIdx} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+              {aiLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted p-3 rounded-lg border border-border/50">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendAiMessage()}
+                placeholder="Ask about weather, traffic, or activities..."
+                disabled={aiLoading}
+                className="flex-1"
+              />
+              <Button onClick={sendAiMessage} disabled={aiLoading || !aiInput.trim()}>
+                <MessageSquare className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Alert Banner */}
       <div className="glass-card p-4 border-l-4 border-accent hover-glow">
         <div className="flex items-start gap-3">
