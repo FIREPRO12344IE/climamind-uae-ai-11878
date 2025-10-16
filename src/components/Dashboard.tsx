@@ -4,7 +4,7 @@ import WeatherModule from "./weather/WeatherModule";
 import TrafficModule from "./traffic/TrafficModule";
 import ResourceModule from "./resource/ResourceModule";
 import TransportModule from "./transport/TransportModule";
-import WasteModule from "./waste/WasteModule";
+import EcoModule from "./eco/EcoModule";
 import ClimaBot from "./ai/ClimaBot";
 import DataPopulator from "./DataPopulator";
 
@@ -72,10 +72,10 @@ const Dashboard = () => {
               🚍 Transport
             </TabsTrigger>
             <TabsTrigger
-              value="waste"
+              value="eco"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 text-sm md:text-base"
             >
-              ♻️ Waste
+              🌱 Eco
             </TabsTrigger>
           </TabsList>
 
@@ -95,8 +95,8 @@ const Dashboard = () => {
             <TransportModule />
           </TabsContent>
 
-          <TabsContent value="waste" className="space-y-6">
-            <WasteModule />
+          <TabsContent value="eco" className="space-y-6">
+            <EcoModule />
           </TabsContent>
         </Tabs>
       </main>
