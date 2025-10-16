@@ -48,7 +48,7 @@ const WeatherCard = ({ data }: WeatherCardProps) => {
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-xl font-bold">{data.city}</h3>
-          <p className="text-3xl font-bold text-primary mt-2">{data.temperature}°C</p>
+          <p className="text-3xl font-bold text-primary mt-2">{Math.round(data.temperature)}°C</p>
         </div>
         <div className="flex items-center gap-2">
           <Cloud className="w-12 h-12 text-primary/50" />
