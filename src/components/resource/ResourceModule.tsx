@@ -86,23 +86,11 @@ const ResourceModule = () => {
         </div>
       )}
 
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Power Consumption</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <PowerCard type="residential" initialValue={450} />
-          <PowerCard type="commercial" initialValue={680} />
-          <PowerCard type="renewable" initialValue={320} />
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Water Management</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <WaterCard />
-          <div className="glass-card p-6">
-            <ResourceChart />
-          </div>
-        </div>
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-semibold mb-4">Resource Overview</h3>
+        <p className="text-muted-foreground">
+          Monitor real-time power and water consumption across UAE cities.
+        </p>
       </div>
     </div>
   );

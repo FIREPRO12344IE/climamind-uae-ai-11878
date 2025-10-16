@@ -138,9 +138,8 @@ const WeatherModule = () => {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg flex items-center gap-2">
+              <h3 className="font-bold text-lg">
                 ClimaBot AI Assistant
-                <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary">Powered by Lovable AI</span>
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
                 Ask me anything about UAE weather, traffic, or activity recommendations based on real-time data!
