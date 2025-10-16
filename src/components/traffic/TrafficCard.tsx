@@ -26,17 +26,43 @@ const TrafficCard = ({ data }: TrafficCardProps) => {
 
   const statusStyle = getStatusColor(data.alert_status);
 
-  const getTravelTimeAdvice = () => {
-    if (data.alert_status === 'heavy') return '🔴 Expect significant delays - consider metro or alternative routes';
-    if (data.alert_status === 'moderate') return '🟡 Moderate traffic - allow extra time for your journey';
-    return '✅ Good conditions for driving';
+  const getCityHotspots = () => {
+    const hotspots: { [key: string]: string[] } = {
+      'Dubai': ['Sheikh Zayed Road (E11)', 'Emirates Road (E611)', 'Business Bay', 'Al Khail Road'],
+      'Abu Dhabi': ['Sheikh Zayed Grand Mosque corridor', 'Sheikh Zayed Road', 'Salam Street', 'Sheikh Khalifa/Al Falah'],
+      'Sharjah': ['Al Ittihad Road', 'Airport Road', 'Al Nahda areas (Dubai commute)'],
+      'Ajman': ['Corniche road', 'E11 approaches', 'Abu Dhabi/Dubai-bound feeders'],
+      'Umm Al Quwain': ['Main connectors to Ajman/Dubai', 'Coastal roads'],
+      'Ras Al Khaimah': ['City center approaches', 'Industrial roads'],
+      'Fujairah': ['Coastal highway', 'City approaches', 'Mountain-road sections']
+    };
+    return hotspots[data.city] || ['Check local traffic sources'];
   };
 
-  const getAlternativeRoutes = () => {
-    if (data.city === 'Dubai' && data.alert_status === 'heavy') {
-      return ['Metro Red Line', 'Alternative: Al Khail Road', 'Alternative: Umm Suqeim Road'];
-    }
-    return ['Metro available', 'Check Dubai Drive app for real-time alternatives'];
+  const getMorningJamInfo = () => {
+    const morningJams: { [key: string]: string } = {
+      'Dubai': 'Heavy inbound towards Dubai Marina/Downtown 07:30–09:00',
+      'Abu Dhabi': 'Inbound to Abu Dhabi island 07:00–09:00',
+      'Sharjah': 'Lots of through-traffic from Sharjah → Dubai 07:15–09:00',
+      'Ajman': 'Peak commute time towards Dubai',
+      'Umm Al Quwain': 'Slowdowns on main connectors during peak commute',
+      'Ras Al Khaimah': 'City center approaches slow during morning rush',
+      'Fujairah': 'Coastal highway approaches can be slow'
+    };
+    return morningJams[data.city] || 'Peak hours: 7-9 AM';
+  };
+
+  const getTrafficSources = () => {
+    const sources: { [key: string]: string[] } = {
+      'Dubai': ['RTA traffic services & cameras', 'TomTom traffic index', 'Google Maps/Waze'],
+      'Abu Dhabi': ['Abu Dhabi Police updates', 'Traffic cams', 'TomTom'],
+      'Sharjah': ['TomTom', 'Sharjah police cams'],
+      'Ajman': ['Ajman Police app'],
+      'Umm Al Quwain': ['Waze', 'ViaMichelin'],
+      'Ras Al Khaimah': ['AI traffic cameras', 'Official feeds'],
+      'Fujairah': ['SkylineWebcams', 'ViaMichelin']
+    };
+    return sources[data.city] || ['Local traffic sources'];
   };
 
   return (
@@ -100,50 +126,50 @@ const TrafficCard = ({ data }: TrafficCardProps) => {
         <div className="space-y-4 pt-4 border-t border-border/50 animate-in slide-in-from-top-2 duration-300">
           <div className="space-y-3 p-4 bg-background/50 rounded-lg">
             <div>
-              <p className="text-xs font-semibold text-primary">Travel Time Advice</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {getTravelTimeAdvice()}
+              <p className="text-xs font-semibold text-primary flex items-center gap-2">
+                <MapPin className="w-3 h-3" />
+                Traffic Hotspots
               </p>
-            </div>
-
-            <div>
-              <p className="text-xs font-semibold text-primary">Alternative Routes</p>
-              <ul className="text-xs text-muted-foreground mt-1 space-y-1">
-                {getAlternativeRoutes().map((route, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <MapPin className="w-3 h-3" />
-                    {route}
+              <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                {getCityHotspots().map((hotspot, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-orange-400 mt-0.5">•</span>
+                    {hotspot}
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-primary">Peak Hours to Avoid</p>
+              <p className="text-xs font-semibold text-primary flex items-center gap-2">
+                <Clock className="w-3 h-3" />
+                Morning Rush Hour
+              </p>
               <p className="text-xs text-muted-foreground mt-1">
-                🕐 Morning: 7-9 AM (24% congestion) | Evening: 5-7 PM (up to 60% congestion)
+                {getMorningJamInfo()}
               </p>
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-primary">Traffic Stats (2024)</p>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                <div className="flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-orange-400" />
-                  <span className="text-xs">Avg: 18min per 10km</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Car className="w-3 h-3 text-cyan-400" />
-                  <span className="text-xs">Rush: 23min per 10km</span>
-                </div>
-              </div>
+              <p className="text-xs font-semibold text-primary flex items-center gap-2">
+                <TrendingUp className="w-3 h-3" />
+                Live Traffic Sources
+              </p>
+              <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                {getTrafficSources().map((source, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-0.5">•</span>
+                    {source}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {data.alert_status === 'heavy' && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
                 <p className="text-xs font-semibold text-red-400">⚠️ Heavy Traffic Alert</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Consider using public transport. Dubai Metro is faster during peak hours.
+                  Use live sources above for real-time reroutes and avoid peak hours when possible.
                 </p>
               </div>
             )}

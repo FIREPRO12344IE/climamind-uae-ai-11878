@@ -100,19 +100,10 @@ const EcoModule = () => {
 
   return (
     <div className="space-y-8 relative">
-      {/* Animated background elements */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-10 w-4 h-4 rounded-full bg-green-400/30 animate-float" />
-        <div className="absolute top-40 right-20 w-3 h-3 rounded-full bg-green-300/40 animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-40 left-1/4 w-5 h-5 rounded-full bg-emerald-400/30 animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-60 right-1/3 w-3 h-3 rounded-full bg-teal-400/40 animate-float" style={{ animationDelay: '1.5s' }} />
-      </div>
-
       {/* Hero Header */}
-      <div className={`glass-card p-8 text-center relative overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-teal-500/10" />
+      <div className={`glass-card p-8 text-center relative overflow-hidden transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 glow-text bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             🌍 Let's Reduce Pollution & Save Our Planet
           </h1>
           <p className="text-lg text-muted-foreground">
@@ -123,14 +114,14 @@ const EcoModule = () => {
 
       {/* Pollution Awareness Bubbles */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold text-center mb-6 glow-text">
+        <h2 className="text-2xl font-semibold text-center mb-6">
           🌱 Pollution Awareness Tips
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {pollutionTips.map((tip, index) => (
             <div
               key={tip.id}
-              className={`glass-card p-6 hover-glow group cursor-pointer transition-all duration-500 hover:scale-105 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`glass-card p-6 group cursor-pointer transition-all duration-300 hover:scale-[1.02] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="flex items-start gap-4">
@@ -146,14 +137,14 @@ const EcoModule = () => {
 
       {/* Eco Action Bubbles */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold text-center mb-6 glow-text">
+        <h2 className="text-2xl font-semibold text-center mb-6">
           🌿 Eco Action & Environment Tips
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {ecoActions.map((action, index) => (
             <div
               key={action.id}
-              className={`glass-card p-6 hover-glow group cursor-pointer transition-all duration-500 hover:scale-105 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`glass-card p-6 group cursor-pointer transition-all duration-300 hover:scale-[1.02] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               style={{ transitionDelay: `${(index + pollutionTips.length) * 100}ms` }}
             >
               <div className="flex items-start gap-4">
@@ -168,10 +159,9 @@ const EcoModule = () => {
       </div>
 
       {/* Community Green Initiatives Banner */}
-      <div className="glass-card p-8 relative overflow-hidden hover-glow">
-        <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/10 to-teal-500/20 animate-pulse-slow" />
+      <div className="glass-card p-8 relative overflow-hidden">
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-8 glow-text bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold text-center mb-8">
             💚 UAE Community Green Initiatives
           </h2>
           
